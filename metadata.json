@@ -1,0 +1,8 @@
+{
+  "name": "FB Custom Theme Login",
+  "description": "A Facebook-inspired login page with a powerful custom theme engine and preference saving functionality.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

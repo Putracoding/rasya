@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Theme Preferences
+    match /themes/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidTheme(request.resource.data);
+      allow update: if isOwner(userId) && isValidTheme(request.resource.data) && (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['primaryColor', 'secondaryColor', 'bgType', 'fontFamily', 'isDark', 'updatedAt'])
+      );
+      allow delete: if isOwner(userId);
+    }
+
+    function isValidTheme(data) {
+      return data.primaryColor is string && data.primaryColor.size() <= 32 &&
+             data.bgType in ['default', 'gradient', 'image', 'glass'] &&
+             data.isDark is bool &&
+             (data.keys().hasAll(['primaryColor', 'bgType', 'isDark'])) &&
+             (data.keys().size() <= 6);
+    }
+  }
+}

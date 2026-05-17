@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "ThemePreference": {
+      "title": "Theme Preference",
+      "description": "User's customized theme settings for the Facebook login page.",
+      "type": "object",
+      "properties": {
+        "primaryColor": {
+          "type": "string",
+          "description": "The main brand color (e.g., Facebook blue or custom)."
+        },
+        "secondaryColor": {
+          "type": "string",
+          "description": "The secondary accent color."
+        },
+        "bgType": {
+          "type": "string",
+          "enum": ["default", "gradient", "image", "glass"],
+          "description": "The type of background style."
+        },
+        "fontFamily": {
+          "type": "string",
+          "description": "The font family used for the page."
+        },
+        "isDark": {
+          "type": "boolean",
+          "description": "Whether dark mode is enabled."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["primaryColor", "bgType", "isDark"]
+    }
+  },
+  "firestore": {
+    "themes/{userId}": {
+      "schema": "ThemePreference",
+      "description": "Stores theme preferences for each user (including anonymous users)."
+    }
+  }
+}
